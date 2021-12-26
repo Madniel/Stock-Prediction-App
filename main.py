@@ -65,7 +65,7 @@ selected_month = tk.StringVar()
 companies = ttk.Combobox(root, textvariable=selected_month)
 
 # get first 3 letters of every month name
-companies['values'] = ['GOOG', 'AMZN']
+companies['values'] = ['Choose', 'GOOG', 'AMZN', 'CDR.WA']
 
 # prevent typing a value
 companies['state'] = 'readonly'
@@ -74,15 +74,21 @@ companies['state'] = 'readonly'
 companies.pack(fill=tk.X, padx=5, pady=5)
 
 
-# bind the selected value changes
-def month_changed(event):
-    """ handle the month changed event """
-    showinfo(
-        title='Result',
-        message=f'You selected {selected_month.get()}!'
-    )
+def print_dataframe(event):
+    # Dataframe
+    name = selected_month.get()
+    if not name:
+        name = 'GOOG'
+    # Setting the end date to today
+    end = datetime.now()
+    # Start date set to 1 year back
+    start = datetime(end.year - 1, end.month, end.day)
+    df = dl.single_df(name, start, end)
+    pt = Table(frame, dataframe=df)
+    pt.show()
+    plot(df)
 
-companies.bind('<<ComboboxSelected>>', month_changed)
+
 
 # Sign in frame
 signin = ttk.Frame(root)
@@ -117,6 +123,7 @@ canvas.draw()
 # placing the canvas on the Tkinter window
 canvas.get_tk_widget().pack()
 # print_dataframe(frame, name)
+companies.bind('<<ComboboxSelected>>', print_dataframe)
 login_button = ttk.Button(signin, text="Search", command=lambda:print_dataframe(email))
 login_button.pack(fill='x', expand=True, pady=10)
 
