@@ -18,23 +18,11 @@ NavigationToolbar2Tk)
 
 
 def plot(df):
-    # the figure that will contain the plot
-    fig = Figure(figsize=(15, 5),
-                 dpi=100)
-
     # adding the subplot
     plot1 = fig.add_subplot(111)
 
     # plotting the graph
     plot1.plot(df['Adj Close'])
-
-    # creating the Tkinter canvas
-    # containing the Matplotlib figure
-    canvas = FigureCanvasTkAgg(fig, master=root)
-    canvas.draw()
-
-    # placing the canvas on the Tkinter window
-    canvas.get_tk_widget().pack()
 
     # creating the Matplotlib toolbar
     toolbar = NavigationToolbar2Tk(canvas, root)
@@ -61,10 +49,13 @@ def print_dataframe(email):
 root = tk.Tk()
 root.geometry("1000x800")
 root.resizable(True, True)
-root.title('Sign In')
+root.title('Stcok Prediction')
 # store email address and password
 email = tk.StringVar()
 password = tk.StringVar()
+# the figure that will contain the plot
+fig = Figure(figsize=(15, 15), dpi=100)
+
 
 label = ttk.Label(text="Please select Company:")
 label.pack(fill=tk.X, padx=5, pady=5)
@@ -106,12 +97,6 @@ email_entry = ttk.Entry(signin, textvariable=email)
 email_entry.pack(fill='x', expand=True)
 email_entry.focus()
 
-frame = tk.Frame(root)
-frame.pack(fill='both', expand=True)
-# print_dataframe(frame, name)
-login_button = ttk.Button(signin, text="Search", command=lambda:print_dataframe(email))
-login_button.pack(fill='x', expand=True, pady=10)
-
 # exit button
 exit_button = ttk.Button(
     root,
@@ -124,5 +109,16 @@ exit_button.pack(
     ipady=5,
     expand=True
 )
+
+frame = tk.Frame(root)
+frame.pack(fill='both', expand=True)
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.draw()
+# placing the canvas on the Tkinter window
+canvas.get_tk_widget().pack()
+# print_dataframe(frame, name)
+login_button = ttk.Button(signin, text="Search", command=lambda:print_dataframe(email))
+login_button.pack(fill='x', expand=True, pady=10)
+
 
 root.mainloop()
