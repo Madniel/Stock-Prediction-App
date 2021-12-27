@@ -59,7 +59,8 @@ def combo_dataframe(event):
     name = selected_comp.get()
     end = datetime.now()
     start = datetime(end.year - 1, end.month, end.day)
-    df = dl.single_df(name, start, end)
+    symbol = company_list[name]
+    df = dl.single_df(symbol, start, end)
     pt = Table(frame, dataframe=df)
     pt.show()
     plot(df)
@@ -69,6 +70,7 @@ root = tk.Tk()
 root.geometry("1530x930+200+50")
 root.resizable(True, True)
 root.title('Stock Prediction')
+
 
 style = ttk.Style(root)
 root.tk.call('source', 'breeze-dark.tcl')
@@ -83,10 +85,17 @@ fig.patch.set_facecolor('#31363B')
 label = ttk.Label(text="Choose Company:")
 label.pack(fill=tk.X, padx=11, pady=10)
 
+file = pd.read_csv('companies.csv')
+file = file.set_index('Name')
+company_list = file.to_dict()
+company_list = company_list['Symbol']
+list_comp = list(company_list.keys())
+list_comp_alph = sorted(list_comp)
+
 # create a combobox
 selected_comp = tk.StringVar()
 companies = ttk.Combobox(root, textvariable=selected_comp)
-companies['values'] = ['Choose', 'GOOG', 'AMZN', 'CDR.WA']
+companies['values'] = list_comp_alph
 
 # prevent typing a value
 companies['state'] = 'readonly'
@@ -100,7 +109,7 @@ shortcut.pack(padx=10, pady=10, fill='x', expand=True)
 
 
 # email
-search_label = ttk.Label(shortcut, text="Write shortcut of Company:")
+search_label = ttk.Label(shortcut, text="Write symbol of Company:")
 search_label.pack(fill='x', expand=True)
 
 search_entry = ttk.Entry(shortcut, textvariable=comp_name)
