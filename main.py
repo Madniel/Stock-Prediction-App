@@ -18,10 +18,13 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 
+def _clear():
+    for item in canvas.get_tk_widget().find_all():
+       canvas.get_tk_widget().delete(item)
 
 def plot(df):
-    with plt.rc_context(
-            { 'xtick.color': 'white', 'ytick.color': 'white'}):
+    fig.clf()
+    with plt.rc_context({ 'xtick.color': 'white', 'ytick.color': 'white'}):
             # adding the subplot
             plot1 = fig.add_subplot(111)
 
