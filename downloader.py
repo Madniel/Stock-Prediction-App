@@ -8,6 +8,7 @@ def single_df(name, start, end):
     dataframe = dataframe[cols]
     dataframe.index = [i for i in range(len(dataframe.index))]
     dataframe['Date'] = [dataframe['Date'][i].date() for i in range(len(dataframe.index))]
+    dataframe = dataframe.sort_values(by='Date', ascending=False)
     return dataframe
 
 

@@ -36,7 +36,6 @@ def plot(df):
 
             # placing the toolbar on the Tkinter window
             canvas.get_tk_widget().pack()
-
 def print_dataframe(company):
     name = company.get()
     if not name:
