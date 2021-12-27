@@ -7,8 +7,7 @@ def single_df(name, start, end):
     cols = cols[-1:] + cols[:-1]
     dataframe = dataframe[cols]
     dataframe.index = [i for i in range(len(dataframe.index))]
-    for i in range(len(dataframe.index)):
-        dataframe['Date'][i] = dataframe['Date'][i].date()
+    dataframe['Date'] = [dataframe['Date'][i].date() for i in range(len(dataframe.index))]
     return dataframe
 
 

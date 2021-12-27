@@ -77,8 +77,8 @@ password = tk.StringVar()
 # the figure that will contain the plot
 fig = Figure(figsize=(15, 15), dpi=100)
 fig.patch.set_facecolor('#31363B')
-label = ttk.Label(text="Please select Company:")
-label.pack(fill=tk.X, padx=5, pady=5)
+label = ttk.Label(text="Choose Company:")
+label.pack(fill=tk.X, padx=11, pady=10)
 
 # create a combobox
 selected_comp = tk.StringVar()
@@ -91,15 +91,13 @@ companies['state'] = 'readonly'
 # place the widget
 companies.pack(fill=tk.X, padx=11, pady=10)
 
-
-
 # Sign in frame
 shortcut = ttk.Frame(root)
 shortcut.pack(padx=10, pady=10, fill='x', expand=True)
 
 
 # email
-search_label = ttk.Label(shortcut, text="Company:")
+search_label = ttk.Label(shortcut, text="Write shortcut of Company:")
 search_label.pack(fill='x', expand=True)
 
 search_entry = ttk.Entry(shortcut, textvariable=comp_name)
