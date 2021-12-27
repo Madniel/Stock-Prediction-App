@@ -1,44 +1,60 @@
 from datetime import datetime
+from tkinter.messagebox import showinfo
+
 import dataframes as dfs
 import downloader as dl
 import plots as plts
 import predictions as predicts
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 from calendar import month_name
 import pandas as pd
 import numpy as np
 from tkinter import *
 import sys
 from pandastable import Table
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 
 
 def plot(df):
-    # adding the subplot
-    plot1 = fig.add_subplot(111)
+    with plt.rc_context(
+            { 'xtick.color': 'white', 'ytick.color': 'white'}):
+            # adding the subplot
+            plot1 = fig.add_subplot(111)
 
-    # plotting the graph
-    plot1.plot(df['Adj Close'])
+            # plotting the graph
+            plot1.plot(df['Date'],df['Adj Close'])
+            # creating the Matplotlib toolbar
+            toolbar = NavigationToolbar2Tk(canvas, root)
+            toolbar.update()
 
-    # creating the Matplotlib toolbar
-    toolbar = NavigationToolbar2Tk(canvas, root)
-    toolbar.update()
+            # placing the toolbar on the Tkinter window
+            canvas.get_tk_widget().pack()
 
-    # placing the toolbar on the Tkinter window
-    canvas.get_tk_widget().pack()
-
-def print_dataframe(email):
-    # Dataframe
-    name = email.get()
+def print_dataframe(company):
+    name = company.get()
     if not name:
-        name = 'GOOG'
+        msg = 'Please choose company'
+        showinfo(
+            title='Error',
+            message=msg
+        )
+        return 0
     # Setting the end date to today
     end = datetime.now()
     # Start date set to 1 year back
+    start = datetime(end.year - 1, end.month, end.day)
+    df = dl.single_df(name, start, end)
+    pt = Table(frame, dataframe=df)
+    pt.show()
+    plot(df)
+
+def combo_dataframe(event):
+    name = selected_comp.get()
+    end = datetime.now()
     start = datetime(end.year - 1, end.month, end.day)
     df = dl.single_df(name, start, end)
     pt = Table(frame, dataframe=df)
@@ -47,61 +63,48 @@ def print_dataframe(email):
 
 # root window
 root = tk.Tk()
-root.geometry("1000x800")
+root.geometry("1530x930+200+50")
 root.resizable(True, True)
-root.title('Stcok Prediction')
-# store email address and password
-email = tk.StringVar()
+root.title('Stock Prediction')
+
+style = ttk.Style(root)
+root.tk.call('source', 'breeze-dark.tcl')
+style.theme_use('breeze-dark')
+
+comp_name = tk.StringVar()
 password = tk.StringVar()
+
 # the figure that will contain the plot
 fig = Figure(figsize=(15, 15), dpi=100)
-
-
+fig.patch.set_facecolor('#31363B')
 label = ttk.Label(text="Please select Company:")
 label.pack(fill=tk.X, padx=5, pady=5)
 
 # create a combobox
-selected_month = tk.StringVar()
-companies = ttk.Combobox(root, textvariable=selected_month)
-
-# get first 3 letters of every month name
+selected_comp = tk.StringVar()
+companies = ttk.Combobox(root, textvariable=selected_comp)
 companies['values'] = ['Choose', 'GOOG', 'AMZN', 'CDR.WA']
 
 # prevent typing a value
 companies['state'] = 'readonly'
 
 # place the widget
-companies.pack(fill=tk.X, padx=5, pady=5)
-
-
-def print_dataframe(event):
-    # Dataframe
-    name = selected_month.get()
-    if not name:
-        name = 'GOOG'
-    # Setting the end date to today
-    end = datetime.now()
-    # Start date set to 1 year back
-    start = datetime(end.year - 1, end.month, end.day)
-    df = dl.single_df(name, start, end)
-    pt = Table(frame, dataframe=df)
-    pt.show()
-    plot(df)
+companies.pack(fill=tk.X, padx=11, pady=10)
 
 
 
 # Sign in frame
-signin = ttk.Frame(root)
-signin.pack(padx=10, pady=10, fill='x', expand=True)
+shortcut = ttk.Frame(root)
+shortcut.pack(padx=10, pady=10, fill='x', expand=True)
 
 
 # email
-email_label = ttk.Label(signin, text="Company:")
-email_label.pack(fill='x', expand=True)
+search_label = ttk.Label(shortcut, text="Company:")
+search_label.pack(fill='x', expand=True)
 
-email_entry = ttk.Entry(signin, textvariable=email)
-email_entry.pack(fill='x', expand=True)
-email_entry.focus()
+search_entry = ttk.Entry(shortcut, textvariable=comp_name)
+search_entry.pack(fill='x', expand=True)
+search_entry.focus()
 
 # exit button
 exit_button = ttk.Button(
@@ -116,16 +119,14 @@ exit_button.pack(
     expand=True
 )
 
-frame = tk.Frame(root)
+frame = tk.Frame(root, bg='black')
 frame.pack(fill='both', expand=True)
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.draw()
 # placing the canvas on the Tkinter window
 canvas.get_tk_widget().pack()
-# print_dataframe(frame, name)
-companies.bind('<<ComboboxSelected>>', print_dataframe)
-login_button = ttk.Button(signin, text="Search", command=lambda:print_dataframe(email))
+companies.bind('<<ComboboxSelected>>', combo_dataframe)
+login_button = ttk.Button(shortcut, text="Search", command=lambda:print_dataframe(comp_name))
 login_button.pack(fill='x', expand=True, pady=10)
-
 
 root.mainloop()
