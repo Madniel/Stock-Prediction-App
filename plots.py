@@ -1,5 +1,22 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
+NavigationToolbar2Tk)
+
+def plotting(fig, df, canvas, root):
+    fig.clf()
+    with plt.rc_context({ 'xtick.color': 'white', 'ytick.color': 'white'}):
+            # adding the subplot
+            plot = fig.add_subplot(111)
+            # plotting the graph
+            plot.plot(df['Date'],df['Adj Close'])
+            # creating the Matplotlib toolbar
+            toolbar = NavigationToolbar2Tk(canvas, root)
+            toolbar.update()
+            # placing the toolbar on the Tkinter window
+            canvas.get_tk_widget().pack()
+
 def show_adj_sl(company):
     plot = company['Adj Close'].plot(legend=True, figsize=(12, 5))
     return plot
