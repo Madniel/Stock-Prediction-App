@@ -92,6 +92,7 @@ style.theme_use('breeze-dark')
 comp_name = tk.StringVar()
 password = tk.StringVar()
 
+
 # Setting default the end date to today
 end = datetime.now()
 # Start default date set to 1 year back
