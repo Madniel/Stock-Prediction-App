@@ -2,6 +2,8 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from base import Base
+from montecarlo import MonteCarlo
+from finalprice import FinalPrice
 
 # Root class to create the interface and define the controller function to switch frames
 class RootApp(tk.Tk):
@@ -24,9 +26,11 @@ class NoteBook(Frame):
         Frame.__init__(self, master)
         self.notebook = ttk.Notebook()
         self.base = Base(self.notebook)
-        self.tab2 = Tab2(self.notebook)
+        self.carlo = MonteCarlo(self.notebook)
+        self.finalprice = FinalPrice(self.notebook)
         self.notebook.add(self.base, text="Basic Information")
-        self.notebook.add(self.tab2, text="Tab2")
+        self.notebook.add(self.carlo, text="Prediction")
+        self.notebook.add(self.finalprice, text="Final Price Distribution")
         self.notebook.pack()
 
     # controller function

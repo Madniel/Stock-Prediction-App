@@ -11,7 +11,7 @@ def plotting(fig, df, canvas, root, key, dictionary):
             plot = fig.add_subplot(111)
             # plotting the graph
             if dictionary[key+1] != 'Moving Average':
-                plot.plot(df['Date'],df[dictionary[key+1]])
+                plot.plot(df['Date'],df[dictionary[key+1]],linestyle='--',marker='o')
             else:
                 plot.plot(df['Date'],df['Adj Close'],label='Adj Close')
                 plot.plot(df['Date'], df['MA for 10 days'],label='MA for 10 days')

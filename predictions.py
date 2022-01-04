@@ -1,10 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
+NavigationToolbar2Tk)
 
-def stock_monte_carlo(df, start_price, days, name):
+def stock_monte_carlo(df, start_price, days):
+    rets = df['Adj Close'].pct_change().dropna()
     dt = 1 / days
-    mu = df[name].mean()
-    sigma = df[name].std()
+
+    mu = rets.mean()
+    sigma = rets.std()
 
     price = np.zeros(days)
     price[0] = start_price
@@ -21,35 +28,50 @@ def stock_monte_carlo(df, start_price, days, name):
 
     return price
 
-def prediction(df, days, name):
-    start_price = df[0][name]  # Taken from above
+def prediction(fig,canvas,root,df):
+    days = 365
+    start_price = df.iloc[0]['Open']
+    fig.clf()
+    with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
+        plot = fig.add_subplot(111)
+        for run in range(100):
+            plot.plot(stock_monte_carlo(df, start_price, days))
 
-    for run in range(100):
-        plt.plot(stock_monte_carlo(df, start_price, days, name))
+        # plot.xlabel('Days')
+        # plot.ylabel('Price')
+        # plot.title('Monte Carlo Analysis for Google')
+        plot.grid()
+        # creating the Matplotlib toolbar
+        toolbar = NavigationToolbar2Tk(canvas, root)
+        toolbar.update()
+        # placing the toolbar on the Tkinter window
+        canvas.get_tk_widget().pack()
 
-    plt.xlabel('Days')
-    plt.ylabel('Price')
-    plt.title('Monte Carlo Analysis for Google')
 
-    return plt
-
-def final_price(df, days, name):
-    mu = df[name].mean()
-    sigma = df[name].std()
-    start_price = df[0][name]
-    runs = 10000
+def final_price(fig,canvas,root,df):
+    days = 365
+    rets = df['Adj Close'].pct_change().dropna()
+    mu = rets.mean()
+    sigma = rets.std()
+    fig.clf()
+    start_price = df.iloc[0]['Open']
+    runs = 3000
     simulations = np.zeros(runs)
     for run in range(runs):
-        simulations[run] = stock_monte_carlo(start_price, days, mu, sigma)[days - 1]
-
-    q = np.percentile(simulations, 1)
-
-    plt.hist(simulations, bins=200)
-    plt.figtext(0.6, 0.8, s="Start price: $%.2f" % start_price)
-    plt.figtext(0.6, 0.7, "Mean final price: $%.2f" % simulations.mean())
-    plt.figtext(0.6, 0.6, "VaR(0.99): $%.2f" % (start_price - q,))
-    plt.figtext(0.15, 0.6, "q(0.99): $%.2f" % q)
-    plt.axvline(x=q, linewidth=4, color='r')
-    plt.title(u"Final price distribution for Google Stock after %s days" % days, weight='bold')
-
-    return plt
+        simulations[run] = stock_monte_carlo(df, start_price, days)[days - 1]
+    with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
+        q = np.percentile(simulations, 1)
+        plot = fig.add_subplot(111)
+        plot.hist(simulations, bins=200)
+        plt.figtext(0.6, 0.8, s="Start price: $%.2f" % start_price)
+        plt.figtext(0.6, 0.7, "Mean final price: $%.2f" % simulations.mean())
+        plt.figtext(0.6, 0.6, "VaR(0.99): $%.2f" % (start_price - q,))
+        plt.figtext(0.15, 0.6, "q(0.99): $%.2f" % q)
+        plt.axvline(x=q, linewidth=4, color='r')
+        plt.title(u"Final price distribution for Google Stock after %s days" % days, weight='bold')
+        plot.grid()
+        # creating the Matplotlib toolbar
+        toolbar = NavigationToolbar2Tk(canvas, root)
+        toolbar.update()
+        # placing the toolbar on the Tkinter window
+        canvas.get_tk_widget().pack()
