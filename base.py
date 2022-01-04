@@ -1,6 +1,7 @@
 from datetime import datetime
 from tkinter.messagebox import showinfo
 import downloader as dl
+import dataframes as dfs
 import plots as plts
 import tkinter as tk
 from tkinter import ttk
@@ -19,6 +20,7 @@ class Base(tk.Frame):
         self.end = datetime.now().date()
         # Start default date set to 1 year back
         self.start = datetime(self.end.year - 1, self.end.month, self.end.day).date()
+        self.value_graph = 0
 
         self.file = pd.read_csv('companies.csv').set_index('Name')
         self.company_list = self.file.to_dict()['Symbol']
@@ -40,6 +42,22 @@ class Base(tk.Frame):
 
         # place the widget
         self.companies.pack(fill=tk.X, padx=11, pady=0)
+
+        # Choose graph
+        self.label1 = ttk.Label(master, text="Choose Graph:")
+        self.label1.pack(fill=tk.X, padx=11, pady=(30, 10))
+
+        # create a combobox OF GRAPH
+        self.selected_graph = tk.StringVar()
+        self.graphs = ttk.Combobox(master, textvariable=self.selected_graph)
+        self.graph_options = {1:'Adj Close', 2:'Volume', 3:'Moving Average', 4:'Daily Return'}
+        self.graphs['values'] = list(self.graph_options.values())
+
+        # prevent typing a value
+        self.graphs['state'] = 'readonly'
+
+        # place the widget
+        self.graphs.pack(fill=tk.X, padx=11, pady=0)
 
         self.shortcut = ttk.Frame(master)
         self.shortcut.pack(padx=10, pady=10, fill='x', expand=True)
@@ -79,30 +97,45 @@ class Base(tk.Frame):
         # Placing the canvas on the Tkinter window
         self.canvas.get_tk_widget().pack(in_=self.bottom)
         self.companies.bind('<<ComboboxSelected>>', self.combo)
-        self.login_button = ttk.Button(self.shortcut, text="Search", command=lambda:self.entry_fun(self.comp_name))
+        self.login_button = ttk.Button(self.shortcut, text="Search", command=lambda:self.entry_fun())
+        self.graphs.bind('<<ComboboxSelected>>', self.combograph)
         self.login_button.pack(fill='x', expand=True, pady=10)
 
-    def print_data(self, name):
-        df = dl.single_df(name, self.start, self.end)
+    def print_data(self):
+        df = dl.single_df(self.symbol, self.start, self.end)
+        df = dfs.daily_return(df)
+        df = dfs.show_ma_one(df)
         pt = Table(self.frame, dataframe=df)
         pt.show()
-        plts.plotting(self.fig, df, self.canvas, self.master)
+        plts.plotting(self.fig, df, self.canvas, self.master, self.value_graph,self.graph_options)
 
-    def entry_fun(self, company):
-        name = company.get()
-        if not name:
+    def entry_fun(self):
+        self.symbol = self.comp_name.get()
+        if not self.symbol:
             msg = 'Please choose company'
             showinfo(title='Error', message=msg)
             return 0
-        self.print_data(name)
+        print(self.value_graph)
+        if self.value_graph:
+                self.print_data()
+        else:
+                msg = 'Please choose graph'
+                showinfo(title='Error', message=msg)
+                return 0
 
     def combo(self, event):
         name = self.selected_comp.get()
-        symbol = self.company_list[name]
-        self.print_data(symbol)
+        self.symbol = self.company_list[name]
+        if self.value_graph:
+            self.print_data()
+
+    def combograph(self, event):
+        name = self.selected_graph.get()
+        self.value_graph = list(self.graph_options.values()).index(name)
+        self.print_data()
 
     def startdate(self):
-        def print_sel(self):
+        def print_sel():
             temp = cal.selection_get()
             if temp >= self.end:
                 msg = 'Start date cannot be the same day or later than end date'
@@ -120,7 +153,7 @@ class Base(tk.Frame):
         ttk.Button(top, text="ok", command=print_sel).pack()
 
     def enddate(self):
-        def print_sel(self):
+        def print_sel():
             temp = cal.selection_get()
             if temp <= self.start:
                 msg = 'Start date cannot be the same day or earlier than end date'

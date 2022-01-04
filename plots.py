@@ -4,13 +4,21 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 
-def plotting(fig, df, canvas, root):
+def plotting(fig, df, canvas, root, key, dictionary):
     fig.clf()
     with plt.rc_context({ 'xtick.color': 'white', 'ytick.color': 'white'}):
             # adding the subplot
             plot = fig.add_subplot(111)
             # plotting the graph
-            plot.plot(df['Date'],df['Adj Close'])
+            if dictionary[key+1] != 'Moving Average':
+                plot.plot(df['Date'],df[dictionary[key+1]])
+            else:
+                plot.plot(df['Date'],df['Adj Close'],label='Adj Close')
+                plot.plot(df['Date'], df['MA for 10 days'],label='MA for 10 days')
+                plot.plot(df['Date'], df['MA for 20 days'],label='MA for 20 days')
+                plot.plot(df['Date'], df['MA for 50 days'],label='MA for 50 days')
+                plot.legend()
+            plot.grid()
             # creating the Matplotlib toolbar
             toolbar = NavigationToolbar2Tk(canvas, root)
             toolbar.update()
