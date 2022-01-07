@@ -56,9 +56,18 @@ def daily_return_two(name1, name2, stock):
     plot = sns.jointplot(name1,name2,stock,kind='scatter',color='green')
     return plot
 
-def daily_return_all(df):
-    plot = sns.pairplot(df.dropna())
-    return plot
+def daily_return_all(fig, datas, canvas, root):
+    fig.clf()
+    print(datas)
+    with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
+        plot = fig.add_subplot(111)
+        df = datas.corr()
+        plot.matshow(df)
+        toolbar = NavigationToolbar2Tk(canvas, root)
+        toolbar.update()
+        # placing the toolbar on the Tkinter window
+        canvas.get_tk_widget().pack()
+
 
 def risk(df):
     df = df.dropna()

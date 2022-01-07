@@ -4,6 +4,7 @@ from tkinter import ttk
 from base import Base
 from montecarlo import MonteCarlo
 from finalprice import FinalPrice
+from correlation import Correlation
 
 # Root class to create the interface and define the controller function to switch frames
 class RootApp(tk.Tk):
@@ -28,9 +29,11 @@ class NoteBook(Frame):
         self.base = Base(self.notebook)
         self.carlo = MonteCarlo(self.notebook)
         self.finalprice = FinalPrice(self.notebook)
+        self.correlation = Correlation(self.notebook)
         self.notebook.add(self.base, text="Basic Information")
         self.notebook.add(self.carlo, text="Prediction")
         self.notebook.add(self.finalprice, text="Final Price Distribution")
+        self.notebook.add(self.correlation, text="Correlation")
         self.notebook.pack()
 
     # controller function
