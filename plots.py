@@ -1,6 +1,7 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+import pandas as pd
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 
@@ -58,34 +59,33 @@ def daily_return_two(name1, name2, stock):
 
 def daily_return_all(fig, datas, canvas, root):
     fig.clf()
-    print(datas)
     with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
-        plot = fig.add_subplot(111)
-        df = datas.corr()
-        plot.matshow(df)
+        g = pd.plotting.scatter_matrix(datas, figsize=(10,10), marker = 'o', hist_kwds = {'bins': 10}, s = 60, alpha = 0.8)
+        # fig.add_axes(g)
         toolbar = NavigationToolbar2Tk(canvas, root)
         toolbar.update()
         # placing the toolbar on the Tkinter window
         canvas.get_tk_widget().pack()
 
 
-def risk(df):
-    df = df.dropna()
-    plt.figure(figsize=(8, 5))
+def risk(fig, df, canvas, root):
+    fig.clf()
+    with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
+        df = df.dropna()
+        plot = fig.add_subplot(111)
+        plot.scatter(df.mean(), df.std(), s=25)
+        for label, x, y in zip(df.columns, df.mean(), df.std()):
+            plot.annotate(
+                label,
+                xy=(x, y), xytext=(-120, 20),
+                textcoords='offset points', ha='right', va='bottom',
+                arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.5'))
+        plot.grid()
+        toolbar = NavigationToolbar2Tk(canvas, root)
+        toolbar.update()
+        # placing the toolbar on the Tkinter window
+        canvas.get_tk_widget().pack()
 
-    plt.scatter(df.mean(), df.std(), s=25)
-
-    plt.xlabel('Expected Return')
-    plt.ylabel('Risk')
-
-    for label, x, y in zip(df.columns, df.mean(), df.std()):
-        plt.annotate(
-            label,
-            xy=(x, y), xytext=(-120, 20),
-            textcoords='offset points', ha='right', va='bottom',
-            arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.5'))
-
-    return plt
 
 def bootstrap(df ,list, name):
     id = list.index(name)

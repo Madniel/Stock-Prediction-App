@@ -5,7 +5,7 @@ from base import Base
 from montecarlo import MonteCarlo
 from finalprice import FinalPrice
 from correlation import Correlation
-
+from risk import Risk
 # Root class to create the interface and define the controller function to switch frames
 class RootApp(tk.Tk):
     def __init__(self):
@@ -30,10 +30,12 @@ class NoteBook(Frame):
         self.carlo = MonteCarlo(self.notebook)
         self.finalprice = FinalPrice(self.notebook)
         self.correlation = Correlation(self.notebook)
+        self.risk = Risk(self.notebook)
         self.notebook.add(self.base, text="Basic Information")
         self.notebook.add(self.carlo, text="Prediction")
         self.notebook.add(self.finalprice, text="Final Price Distribution")
         self.notebook.add(self.correlation, text="Correlation")
+        self.notebook.add(self.risk, text="Value at Risk")
         self.notebook.pack()
 
     # controller function
