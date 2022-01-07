@@ -59,9 +59,10 @@ def daily_return_two(name1, name2, stock):
 
 def daily_return_all(fig, datas, canvas, root):
     fig.clf()
+    plot = fig.add_subplot(111)
     with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
-        g = pd.plotting.scatter_matrix(datas, figsize=(10,10), marker = 'o', hist_kwds = {'bins': 10}, s = 60, alpha = 0.8)
-        # fig.add_axes(g)
+        pd.plotting.scatter_matrix(datas,ax=plot, figsize=(10,10), marker = 'o', hist_kwds = {'bins': 10}, s = 60, alpha = 0.8)
+        # plot.plot(g)
         toolbar = NavigationToolbar2Tk(canvas, root)
         toolbar.update()
         # placing the toolbar on the Tkinter window
