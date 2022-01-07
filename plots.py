@@ -1,9 +1,6 @@
-import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 import pandas as pd
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
-NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 def plotting(fig, df, canvas, root, key, dictionary):
     fig.clf()
@@ -26,37 +23,6 @@ def plotting(fig, df, canvas, root, key, dictionary):
             # placing the toolbar on the Tkinter window
             canvas.get_tk_widget().pack()
 
-def show_adj_sl(company):
-    plot = company['Adj Close'].plot(legend=True, figsize=(12, 5))
-    return plot
-
-def show_adj_ml(name,list, stock):
-    id = list.index(name)
-    plot = show_adj_ml(stock[id])
-    return plot
-
-def show_volume(company):
-    plot = company['Volume'].plot(legend=True, figsize=(12, 5))
-    return plot
-
-def show_volume_ml(name,list, stock):
-    id = list.index(name)
-    plot = show_volume(stock[id])
-    return plot
-
-def show_ma(df):
-    plot = df[['Adj Close','MA for 10 days','MA for 20 days','MA for 50 days']].plot(subplots=False,figsize=(12,5))
-    return plot
-
-def daily_return(df):
-    plot1 = df['Daily Return'].plot(figsize=(14, 5), legend=True, linestyle='--', marker='o')
-    plot2 = sns.distplot(df['Daily Return'].dropna(),bins=100,color='red')
-    return plot1, plot2
-
-def daily_return_two(name1, name2, stock):
-    plot = sns.jointplot(name1,name2,stock,kind='scatter',color='green')
-    return plot
-
 def daily_return_all(fig, datas, canvas, root):
     fig.clf()
     plot = fig.add_subplot(111)
@@ -67,7 +33,6 @@ def daily_return_all(fig, datas, canvas, root):
         toolbar.update()
         # placing the toolbar on the Tkinter window
         canvas.get_tk_widget().pack()
-
 
 def risk(fig, df, canvas, root):
     fig.clf()
@@ -88,8 +53,3 @@ def risk(fig, df, canvas, root):
         canvas.get_tk_widget().pack()
 
 
-def bootstrap(df ,list, name):
-    id = list.index(name)
-    df = df[id]
-    plot = sns.distplot(df['Daily Return'].dropna(),bins=100,color='purple')
-    return plot

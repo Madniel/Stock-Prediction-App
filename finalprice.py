@@ -3,11 +3,9 @@ from tkinter.messagebox import showinfo
 import downloader as dl
 import dataframes as dfs
 import predictions as predict
-import plots as plts
 import tkinter as tk
 from tkinter import ttk
 import pandas as pd
-from pandastable import Table
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -78,13 +76,13 @@ class FinalPrice(tk.Frame):
         self.login_button.pack(fill='x', expand=True, pady=10)
 
     def print_data(self):
-        df = dl.single_df(self.symbol, self.start, self.end)
+        df = dl.dl_df(self.symbol, self.start, self.end)
         df = dfs.daily_return(df)
         df = dfs.show_ma_one(df)
         predict.final_price(self.fig, self.canvas, self, df)
 
     def entry_fun(self):
-        self.symbol = self.comp_name.get()
+        self.symbol = self.comp_name.get().upper()
         if not self.symbol:
             msg = 'Please choose company'
             showinfo(title='Error', message=msg)

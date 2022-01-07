@@ -102,7 +102,7 @@ class Base(tk.Frame):
         self.login_button.pack(fill='x', expand=True, pady=10)
 
     def print_data(self):
-        df = dl.single_df(self.symbol, self.start, self.end)
+        df = dl.dl_df(self.symbol, self.start, self.end)
         df = dfs.daily_return(df)
         df = dfs.show_ma_one(df)
         pt = Table(self.frame, dataframe=df)

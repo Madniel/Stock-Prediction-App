@@ -1,20 +1,9 @@
 from datetime import datetime
 from tkinter.messagebox import showinfo
 import downloader as dl
-import dataframes as dfs
-import predictions as predict
 import plots as plts
 import tkinter as tk
 from tkinter import ttk
-import pandas as pd
-from pandastable import Table
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import tkinter
-from typing import Callable
-import numpy as np
-import seaborn as sns
-from matplotlib.backend_bases import key_press_handler
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -23,6 +12,7 @@ class Risk(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         self._frame = tk.Frame
+
         # Setting default the end date to today
         self.end = datetime.now().date()
         # Start default date set to 1 year back
@@ -73,9 +63,9 @@ class Risk(tk.Frame):
     def print_data(self):
         datas = []
         for i in range(len(self.symbol)):
-            name = str(self.symbol[i].get())
+            name = str(self.symbol[i].get()).upper()
             if self.symbol[i].get():
-                df = dl.single_df(self.symbol[i].get(), self.start, self.end)
+                df = dl.dl_df(self.symbol[i].get(), self.start, self.end)
                 df = df[['Adj Close']]
                 df = df.rename(columns={'Adj Close': name})
                 if not i:

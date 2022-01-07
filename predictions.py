@@ -1,8 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 

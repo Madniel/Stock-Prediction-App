@@ -1,6 +1,6 @@
 from pandas_datareader.data import DataReader
 
-def single_df(name, start, end):
+def dl_df(name, start, end):
     dataframe = DataReader(name, 'yahoo', start, end)
     dataframe['Date'] = dataframe.index
     cols = dataframe.columns.tolist()
@@ -11,10 +11,3 @@ def single_df(name, start, end):
     dataframe = dataframe.sort_values(by='Date', ascending=False)
     return dataframe
 
-
-def multi_df(companies, start, end):
-    stock = []
-    for company in companies:
-        data = single_df(company, start, end)
-        stock.append(data)
-    return stock
