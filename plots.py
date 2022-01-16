@@ -27,8 +27,11 @@ def daily_return_all(fig, datas, canvas, root):
     fig.clf()
     plot = fig.add_subplot(111)
     with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
-        pd.plotting.scatter_matrix(datas,ax=plot, figsize=(10,10), marker = 'o', hist_kwds = {'bins': 10}, s = 60, alpha = 0.8)
-        # plot.plot(g)
+        sm = pd.plotting.scatter_matrix(datas,ax=plot, figsize=(10,10), marker = 'o', hist_kwds = {'bins': 10}, s = 60, alpha = 0.8)
+        for subaxis in sm:
+            for ax in subaxis:
+                ax.xaxis.label.set_color('white')  # setting up X-axis label color to yellow
+                ax.yaxis.label.set_color('white')
         toolbar = NavigationToolbar2Tk(canvas, root)
         toolbar.update()
         # placing the toolbar on the Tkinter window
@@ -47,6 +50,8 @@ def risk(fig, df, canvas, root):
                 textcoords='offset points', ha='right', va='bottom',
                 arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.5'))
         plot.grid()
+        plot.set_xlabel('Expected return').set_color('white')
+        plot.set_ylabel('Risk').set_color('white')
         toolbar = NavigationToolbar2Tk(canvas, root)
         toolbar.update()
         # placing the toolbar on the Tkinter window

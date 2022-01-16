@@ -20,7 +20,7 @@ class Risk(tk.Frame):
 
         # Create the figure that will contain the plot
         self.fig = Figure(figsize=(15, 15), dpi=100)
-        self.fig.patch.set_facecolor('#31363B')
+        self.fig.patch.set_facecolor('#606972')
 
         self.shortcut = ttk.Frame(self)
         self.shortcut.pack(padx=10, pady=10, fill='x', expand=True)
@@ -31,7 +31,7 @@ class Risk(tk.Frame):
         self.symbol = []
         self.search_entry =[]
 
-        for i in range(4):
+        for i in range(5):
             name = tk.StringVar()
             self.search_entry.append(ttk.Entry(self.shortcut, textvariable=name))
             self.symbol.append(name)

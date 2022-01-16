@@ -30,7 +30,7 @@ class Correlation(tk.Frame):
         self.symbol = []
         self.search_entry =[]
 
-        for i in range(4):
+        for i in range(5):
             name = tk.StringVar()
             self.search_entry.append(ttk.Entry(self.shortcut, textvariable=name))
             self.symbol.append(name)
@@ -62,7 +62,7 @@ class Correlation(tk.Frame):
     def print_data(self):
         datas = []
         for i in range(len(self.symbol)):
-            name = str(self.symbol[i].get())
+            name = str(self.symbol[i].get()).upper()
             if self.symbol[i].get():
                 df = dl.dl_df(self.symbol[i].get(), self.start, self.end)
                 df = df[['Adj Close']]
