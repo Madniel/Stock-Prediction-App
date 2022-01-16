@@ -77,10 +77,11 @@ class MonteCarlo(tk.Frame):
         self.login_button.pack(fill='x', expand=True, pady=10)
 
     def print_data(self):
+        name = list(self.company_list.keys())[list(self.company_list.values()).index(self.symbol)]
         df = dl.dl_df(self.symbol, self.start, self.end)
         df = dfs.daily_return(df)
         df = dfs.show_ma_one(df)
-        predict.prediction(self.fig, self.canvas, self, df)
+        predict.prediction(self.fig, self.canvas, self, df, name)
 
     def entry_fun(self):
         self.symbol = self.comp_name.get().upper()

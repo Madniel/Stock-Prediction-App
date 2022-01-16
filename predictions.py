@@ -1,7 +1,10 @@
+import math
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
-NavigationToolbar2Tk)
+                                               NavigationToolbar2Tk)
+
 
 def stock_monte_carlo(df, start_price, days):
     rets = df['Adj Close'].pct_change().dropna()
@@ -25,7 +28,8 @@ def stock_monte_carlo(df, start_price, days):
 
     return price
 
-def prediction(fig,canvas,root,df):
+
+def prediction(fig, canvas, root, df, name):
     days = 365
     start_price = df.iloc[0]['Open']
     fig.clf()
@@ -34,9 +38,9 @@ def prediction(fig,canvas,root,df):
         for run in range(100):
             plot.plot(stock_monte_carlo(df, start_price, days))
 
-        # plot.xlabel('Days')
-        # plot.ylabel('Price')
-        # plot.title('Monte Carlo Analysis for Google')
+        plot.set_xlabel('Days').set_color('white')
+        plot.set_ylabel('Price').set_color('white')
+        plot.set_title(f'Monte Carlo Analysis for {name}').set_color('white')
         plot.grid()
         # creating the Matplotlib toolbar
         toolbar = NavigationToolbar2Tk(canvas, root)
@@ -45,7 +49,7 @@ def prediction(fig,canvas,root,df):
         canvas.get_tk_widget().pack()
 
 
-def final_price(fig,canvas,root,df):
+def final_price(fig, canvas, root, df, name):
     days = 365
     rets = df['Adj Close'].pct_change().dropna()
     mu = rets.mean()
@@ -60,12 +64,12 @@ def final_price(fig,canvas,root,df):
         q = np.percentile(simulations, 1)
         plot = fig.add_subplot(111)
         plot.hist(simulations, bins=200)
-        plt.figtext(0.6, 0.8, s="Start price: $%.2f" % start_price)
-        plt.figtext(0.6, 0.7, "Mean final price: $%.2f" % simulations.mean())
-        plt.figtext(0.6, 0.6, "VaR(0.99): $%.2f" % (start_price - q,))
-        plt.figtext(0.15, 0.6, "q(0.99): $%.2f" % q)
-        plt.axvline(x=q, linewidth=4, color='r')
-        plt.title(u"Final price distribution for Google Stock after %s days" % days, weight='bold')
+        plot.text(0.6, 0.8, s="Start price: $%.2f" % start_price)
+        plot.text(0.6, 0.7, s="Mean final price: $%.2f" % simulations.mean())
+        plot.text(0.6, 0.6, s="VaR(0.99): $%.2f" % (start_price - q,))
+        plot.text(0.15, 0.6, s="q(0.99): $%.2f" % q)
+        plot.axvline(x=q, ymin=0, linewidth=4, color='r')
+        plot.set_title(f"Final price distribution for {name} Stock after {days} days", weight='bold').set_color('white')
         plot.grid()
         # creating the Matplotlib toolbar
         toolbar = NavigationToolbar2Tk(canvas, root)
