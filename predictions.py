@@ -29,8 +29,8 @@ def stock_monte_carlo(df, start_price, days):
     return price
 
 
-def prediction(fig, canvas, root, df, name):
-    days = 365
+def prediction(fig, canvas, root, df, name, number):
+    days = number
     start_price = df.iloc[0]['Open']
     fig.clf()
     with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
@@ -40,7 +40,7 @@ def prediction(fig, canvas, root, df, name):
 
         plot.set_xlabel('Days').set_color('white')
         plot.set_ylabel('Price').set_color('white')
-        plot.set_title(f'Monte Carlo Analysis for {name}').set_color('white')
+        plot.set_title(f'Monte Carlo Analysis for {name} for {number} days').set_color('white')
         plot.grid()
         # creating the Matplotlib toolbar
         toolbar = NavigationToolbar2Tk(canvas, root)
@@ -49,11 +49,8 @@ def prediction(fig, canvas, root, df, name):
         canvas.get_tk_widget().pack()
 
 
-def final_price(fig, canvas, root, df, name):
-    days = 365
-    rets = df['Adj Close'].pct_change().dropna()
-    mu = rets.mean()
-    sigma = rets.std()
+def final_price(fig, canvas, root, df, name, number):
+    days = number
     fig.clf()
     start_price = df.iloc[0]['Open']
     runs = 3000
@@ -61,15 +58,17 @@ def final_price(fig, canvas, root, df, name):
     for run in range(runs):
         simulations[run] = stock_monte_carlo(df, start_price, days)[days - 1]
     with plt.rc_context({'xtick.color': 'white', 'ytick.color': 'white'}):
-        q = np.percentile(simulations, 1)
         plot = fig.add_subplot(111)
+        q = np.percentile(simulations, 1)
         plot.hist(simulations, bins=200)
-        plot.text(0.6, 0.8, s="Start price: $%.2f" % start_price)
-        plot.text(0.6, 0.7, s="Mean final price: $%.2f" % simulations.mean())
-        plot.text(0.6, 0.6, s="VaR(0.99): $%.2f" % (start_price - q,))
-        plot.text(0.15, 0.6, s="q(0.99): $%.2f" % q)
+        x = plot.get_xlim()[0] + (plot.get_xlim()[-1]-plot.get_xlim()[0])*0.8
+        y = plot.get_ylim()[0] + (plot.get_ylim()[-1]-plot.get_ylim()[0])*0.8
+        plot.text(x, y-5, s="Start price: $%.2f" % start_price)
+        plot.text(x, y-10, s="Mean final price: $%.2f" % simulations.mean())
+        plot.text(x, y-15, s="VaR(0.99): $%.2f" % (start_price - q,))
+        plot.text(x, y-20, s="q(0.99): $%.2f" % q)
         plot.axvline(x=q, ymin=0, linewidth=4, color='r')
-        plot.set_title(f"Final price distribution for {name} Stock after {days} days", weight='bold').set_color('white')
+        plot.set_title(f"Final price distribution for {name} Stock after {number} days", weight='bold').set_color('white')
         plot.grid()
         # creating the Matplotlib toolbar
         toolbar = NavigationToolbar2Tk(canvas, root)

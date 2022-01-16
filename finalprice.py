@@ -44,6 +44,9 @@ class FinalPrice(tk.Frame):
         self.shortcut = ttk.Frame(self)
         self.shortcut.pack(padx=10, pady=10, fill='x', expand=True)
 
+        self.nod = ttk.Frame(self)
+        self.nod.pack(padx=10, pady=10, fill='x', expand=True)
+
         # Symbol
         self.search_label = ttk.Label(self.shortcut, text="Write symbol of Company:")
         self.search_label.pack(fill='x', expand=True)
@@ -51,6 +54,14 @@ class FinalPrice(tk.Frame):
         self.search_entry = ttk.Entry(self.shortcut, textvariable=self.comp_name)
         self.search_entry.pack(fill='x', expand=True)
         self.search_entry.focus()
+
+        # Number of days
+        self.search_label_n = ttk.Label(self.nod, text="Write number of days:")
+        self.search_label_n.pack(fill='x', expand=True)
+        self.number = tk.IntVar()
+        self.search_entry_n = ttk.Entry(self.nod, textvariable=self.number)
+        self.search_entry_n.pack(fill='x', expand=True)
+        self.search_entry_n.focus()
 
         self.top = tk.Frame(self)
         self.top.pack(side=tk.TOP)
@@ -72,15 +83,26 @@ class FinalPrice(tk.Frame):
         self.canvas.get_tk_widget().pack(in_=self.bottom)
 
         self.companies.bind('<<ComboboxSelected>>', self.combo)
-        self.login_button = ttk.Button(self.shortcut, text="Search", command=lambda: self.entry_fun())
+        self.login_button = ttk.Button(self.nod, text="Search", command=lambda: self.entry_fun())
         self.login_button.pack(fill='x', expand=True, pady=10)
 
     def print_data(self):
-        name = list(self.company_list.keys())[list(self.company_list.values()).index(self.symbol)]
-        df = dl.dl_df(self.symbol, self.start, self.end)
-        df = dfs.daily_return(df)
-        df = dfs.show_ma_one(df)
-        predict.final_price(self.fig, self.canvas, self, df, name)
+        try:
+            name = list(self.company_list.keys())[list(self.company_list.values()).index(self.symbol)]
+            df = dl.dl_df(self.symbol, self.start, self.end)
+            df = dfs.daily_return(df)
+            df = dfs.show_ma_one(df)
+            if self.number.get() > 0:
+                predict.final_price(self.fig, self.canvas, self, df, name, self.number.get())
+            else:
+                msg = 'Number of days must be greater than 0'
+                showinfo(title='Error', message=msg)
+                return 0
+        except ValueError:
+            msg = 'No company found with that symbol'
+            showinfo(title='Error', message=msg)
+            return 0
+
 
     def entry_fun(self):
         self.symbol = self.comp_name.get().upper()
