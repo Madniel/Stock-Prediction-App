@@ -25,7 +25,7 @@ class Base(tk.Frame):
         self.file = pd.read_csv('companies.csv').set_index('Name')
         self.company_list = self.file.to_dict()['Symbol']
         self.list_comp =sorted(list(self.company_list.keys()))
-
+        self.ok = False
         # Create the figure that will contain the plot
         self.fig = Figure(figsize=(15, 15), dpi=100)
         self.fig.patch.set_facecolor('#31363B')
@@ -108,35 +108,36 @@ class Base(tk.Frame):
         plts.plotting(self.fig, df, self.canvas, self, self.value_graph,self.graph_options)
 
     def entry_fun(self):
-        self.symbol = self.comp_name.get()
-        if not self.symbol:
-            msg = 'Please choose company'
-            showinfo(title='Error', message=msg)
-            return 0
-        if self.value_graph:
-                self.value_graph -=1
+        if not self.ok:
+            self.symbol = self.comp_name.get()
+            self.ok = False
+        if self.selected_graph.get():
                 self.print_data()
-                self.value_graph += 1
         else:
-                msg = 'Please choose graph'
+                msg = 'Please choose graph '
                 showinfo(title='Error', message=msg)
                 return 0
 
     def combo(self, event):
         name = self.selected_comp.get()
         self.symbol = self.company_list[name]
-        if self.value_graph:
-            self.print_data()
+        self.ok = True
+        if not self.selected_graph.get():
+            msg = 'Please choose graph and then press search'
+            showinfo(title='Info', message=msg)
+            return 0
+        # if self.value_graph:
+        #     self.print_data()
 
     def combograph(self, event):
         name = self.selected_graph.get()
-        self.value_graph = list(self.graph_options.values()).index(name) + 1
+        self.value_graph = list(self.graph_options.values()).index(name)
         if not self.symbol:
-            msg = 'Please choose company'
+            msg = 'Please choose company and then press search'
             showinfo(title='Error', message=msg)
             return 0
-        else:
-            self.print_data()
+        # else:
+        #     self.print_data()
 
     def startdate(self):
         def print_sel():
