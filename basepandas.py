@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkcalendar import Calendar
 
 # Base Information
-class Base(tk.Frame):
+class BasePandas(tk.Frame):
     def __init__(self,master):
         tk.Frame.__init__(self,master)
         self._frame = tk.Frame
@@ -29,12 +29,12 @@ class Base(tk.Frame):
         # Create the figure that will contain the plot
         self.fig = Figure(figsize=(15, 15), dpi=100)
         self.fig.patch.set_facecolor('#31363B')
-        self.label = ttk.Label(master, text="Choose Company:")
-        self.label.pack(fill=tk.X, padx=11, pady=(30, 10))
+        self.label = ttk.Label(self, text="Choose Company:")
+        self.label.pack(fill=tk.X, padx=11, pady=(30, 0))
 
         # create a combobox
         self.selected_comp = tk.StringVar()
-        self.companies = ttk.Combobox(master, textvariable=self.selected_comp)
+        self.companies = ttk.Combobox(self, textvariable=self.selected_comp)
         self.companies['values'] = self.list_comp
 
         # prevent typing a value
@@ -43,24 +43,8 @@ class Base(tk.Frame):
         # place the widget
         self.companies.pack(fill=tk.X, padx=11, pady=0)
 
-        # Choose graph
-        self.label1 = ttk.Label(master, text="Choose Graph:")
-        self.label1.pack(fill=tk.X, padx=11, pady=(30, 10))
-
-        # create a combobox OF GRAPH
-        self.selected_graph = tk.StringVar()
-        self.graphs = ttk.Combobox(master, textvariable=self.selected_graph)
-        self.graph_options = {1:'Adj Close', 2:'Volume', 3:'Moving Average', 4:'Daily Return'}
-        self.graphs['values'] = list(self.graph_options.values())
-
-        # prevent typing a value
-        self.graphs['state'] = 'readonly'
-
-        # place the widget
-        self.graphs.pack(fill=tk.X, padx=11, pady=0)
-
-        self.shortcut = ttk.Frame(master)
-        self.shortcut.pack(padx=10, pady=10, fill='x', expand=True)
+        self.shortcut = ttk.Frame(self)
+        self.shortcut.pack(padx=10, pady=0, fill='x', expand=True)
 
         # Symbol
         self.search_label = ttk.Label(self.shortcut, text="Write symbol of Company:")
@@ -70,42 +54,36 @@ class Base(tk.Frame):
         self.search_entry.pack(fill='x', expand=True)
         self.search_entry.focus()
 
-        self.top = tk.Frame(master)
+        self.top = tk.Frame(self)
         self.top.pack(side=tk.TOP)
 
-        self.bottom = tk.Frame(master)
+        self.bottom = tk.Frame(self)
         self.bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
+        self.frame = tk.Frame(self, bg='black')
+        self.frame.pack(in_=self.bottom, fill='both', expand=True)
         # Set range date
-        self.first = tk.Button(master, text=f'From {self.start}', command=self.startdate)
-        self.first.pack(in_=self.top, side=tk.LEFT, padx=20, pady=10)
+        self.first = tk.Button(self, text=f'From {self.start}', command=self.startdate)
+        self.first.pack(in_=self.top, side=tk.LEFT, padx=20, pady=0)
 
-        self.last=tk.Button(master, text=f'To {self.end}', command=self.enddate)
-        self.last.pack(in_=self.top, side=tk.RIGHT, padx=20, pady=10)
+        self.last=tk.Button(self, text=f'To {self.end}', command=self.enddate)
+        self.last.pack(in_=self.top, side=tk.RIGHT, padx=20, pady=0)
 
         # exit button
-        self.exit_button = ttk.Button(master, text='Exit', command=lambda: master.quit())
+        self.exit_button = ttk.Button(self, text='Exit', command=lambda: master.quit())
         self.exit_button.pack(in_=self.bottom, ipadx=5, ipady=5, expand=True)
-
-        self.frame = tk.Frame(master, bg='black')
-        self.frame.pack(in_=self.bottom,fill='both', expand=True)
-
-        # Create Canvas
-        self.canvas = FigureCanvasTkAgg(self.fig, master=master)
-        self.canvas.draw()
-
-        # Placing the canvas on the Tkinter window
-        self.canvas.get_tk_widget().pack(in_=self.bottom)
         self.companies.bind('<<ComboboxSelected>>', self.combo)
-        self.login_button = ttk.Button(self.shortcut, text="Search", command=lambda:self.entry_fun())
-        self.graphs.bind('<<ComboboxSelected>>', self.combograph)
-        self.login_button.pack(fill='x', expand=True, pady=10)
+        self.login_button = ttk.Button(self.shortcut, text="Search", command=lambda: self.entry_fun())
+        self.login_button.pack(fill='x', expand=True, pady=0)
+
+
 
     def print_data(self):
         df = dl.dl_df(self.symbol, self.start, self.end)
         df = dfs.daily_return(df)
         df = dfs.show_ma_one(df)
-        plts.plotting(self.fig, df, self.canvas, self, self.value_graph,self.graph_options)
+        pt = Table(self.frame, dataframe=df)
+        pt.show()
+        # plts.plotting(self.fig, df, self.canvas, self.frame, self.value_graph,self.graph_options)
 
     def entry_fun(self):
         self.symbol = self.comp_name.get()
@@ -113,30 +91,13 @@ class Base(tk.Frame):
             msg = 'Please choose company'
             showinfo(title='Error', message=msg)
             return 0
-        if self.value_graph:
-                self.value_graph -=1
-                self.print_data()
-                self.value_graph += 1
-        else:
-                msg = 'Please choose graph'
-                showinfo(title='Error', message=msg)
-                return 0
+        self.print_data()
+
 
     def combo(self, event):
         name = self.selected_comp.get()
         self.symbol = self.company_list[name]
-        if self.value_graph:
-            self.print_data()
-
-    def combograph(self, event):
-        name = self.selected_graph.get()
-        self.value_graph = list(self.graph_options.values()).index(name) + 1
-        if not self.symbol:
-            msg = 'Please choose company'
-            showinfo(title='Error', message=msg)
-            return 0
-        else:
-            self.print_data()
+        self.print_data()
 
     def startdate(self):
         def print_sel():

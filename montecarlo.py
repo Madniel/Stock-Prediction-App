@@ -95,8 +95,10 @@ class MonteCarlo(tk.Frame):
             df = dfs.show_ma_one(df)
             if self.number.get() > 0:
                 predict.prediction(self.fig, self.canvas, self, df, name, self.number.get())
+                if self.selected_comp.get():
+                    self.symbol = ''
             else:
-                msg = 'Number of days must be greater than 0'
+                msg = 'Number of days must be greater than 0. Write numbers of days and click \'search\''
                 showinfo(title='Error', message=msg)
                 return 0
 
@@ -106,11 +108,12 @@ class MonteCarlo(tk.Frame):
             return 0
 
     def entry_fun(self):
-        self.symbol = self.comp_name.get().upper()
         if not self.symbol:
-            msg = 'Please choose company'
-            showinfo(title='Error', message=msg)
-            return 0
+            self.symbol = self.comp_name.get().upper()
+            if not self.symbol:
+                msg = 'Please choose company'
+                showinfo(title='Error', message=msg)
+                return 0
         self.print_data()
 
 
