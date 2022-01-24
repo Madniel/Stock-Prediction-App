@@ -1,5 +1,6 @@
-#Stock Prediction
-Projekt ma na celu na badaniu działań firmy na giełdzie oraz na przewidywaniu wartości ich akcji
+# Stock Prediction
+
+Projekt ma na celu badanie akcji firm, a także przewidywaniu ich wartości
 
 ## Base information - Graphs
 Ten ekran umożliwia sprawdzenie takich danych o firmie jak:
