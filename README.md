@@ -9,7 +9,7 @@ Ten ekran umożliwia sprawdzenie takich danych o firmie jak:
 - Dzienny zwrot
 
 Użytkownik wybiera rodzaj grafu za pomocą środkowego suwaka a następnie wybiera firme.
-Może to zrobić poprzez suwak zlistą firm lub wpisać jej skrót zgodnie z skrótami na Yahoo Finance.
+Może to zrobić poprzez suwak z listą firm lub wpisać jej skrót zgodnie z skrótami na Yahoo Finance.
 Bo wyborze firmy oraz grafu wciskamy 'search'
 
 ## Base information - Table
@@ -18,8 +18,10 @@ Wybieramy firme poprzez suwak lub wpisujemy jej skrót.
 Po wyborze wciskamy 'search'
 
 ## Prediction
+
 Ta zakładka umożłiwia nam przewidzenie cen akcji firmy określoną liczbą dni do przodu
-metodą monte carlo.
+metodą monte carlo. Więcej informacji na temat metody Monte Carlo pod tym linkiem [link](http://www.investopedia.com/articles/07/montecarlo.asp). 
+W skrócie: w tej metodzie przeprowadzamy symulacje, aby przewidzieć przyszłość wiele razy, a na końcu sumujemy wyniki, aby uzyskać jakąś wymierną wartość.
 Wybieramy firme poprzez suwak lub skrót, a następnie określamy liczbę dni.
 
 ## Value at risk
@@ -33,4 +35,7 @@ Tworzona jest macierz wykresów, gdzie po głównej przekątnej pokazywane są h
 (Na przecięciu tym bowiem porównuje się te zamą firmę)
 
 ## Value at Risk
-W tej części możemy jaką wartość narażamy na ryzyko inwestując w daną akcję
+W tej części możemy zobaczyć jaką wartość narażamy na ryzyko inwestując w daną akcję.
+Podstawowym sposobem ilościowego określenia ryzyka jest porównanie oczekiwanego zwrotu 
+(który może być średnią dziennych zwrotów z akcji) z 
+odchyleniem standardowym dziennych zwrotów.

@@ -108,9 +108,10 @@ class Base(tk.Frame):
         plts.plotting(self.fig, df, self.canvas, self, self.value_graph,self.graph_options)
 
     def entry_fun(self):
-        if not self.ok:
+        if not self.ok and self.comp_name.get():
             self.symbol = self.comp_name.get()
             self.ok = False
+            self.comp_name = tk.StringVar()
         if self.selected_graph.get():
                 self.print_data()
         else:
